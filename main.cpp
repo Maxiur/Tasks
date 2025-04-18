@@ -1,16 +1,21 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include <algorithm>
 
-bool isPrime(int n)
-{
-    if (n < 2) return false;
-    int k=2;
-    while (n%k != 0 && k*k<=n)
-        k++;
-    if (k*k > n)
-        return true;
-    return false;
+std::vector<bool> sieve(int max_value) {
+
+    std::vector<bool> is_prime(max_value + 1, true);
+    is_prime[0] = false;
+    is_prime[1] = false;
+    for (int i = 2; i <= max_value; ++i) {
+        is_prime[i] = true;
+        if(is_prime[i]) {
+            for (int j = i * i; j <= max_value; j += i)
+                is_prime[j] = false;
+        }
+    }
+    return is_prime;
 }
 
 auto main() -> int {
@@ -22,9 +27,15 @@ auto main() -> int {
     for (auto i: B)
         array[i]++;
 
+    int max_frequency{};
+    for (const auto& [key,value] : array)
+        max_frequency = std::max(max_frequency, value);
+
+    auto is_prime = sieve(max_frequency);
+
     for (auto i: A)
     {
-        if (!isPrime(array[i]))
+        if (!is_prime[array[i]])
             C.push_back(i);
     }
     for (auto i: C)

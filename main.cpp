@@ -9,7 +9,6 @@ std::vector<bool> sieve(int max_value) {
     is_prime[0] = false;
     is_prime[1] = false;
     for (int i = 2; i <= max_value; ++i) {
-        is_prime[i] = true;
         if(is_prime[i]) {
             for (int j = i * i; j <= max_value; j += i)
                 is_prime[j] = false;
@@ -18,26 +17,31 @@ std::vector<bool> sieve(int max_value) {
     return is_prime;
 }
 
-auto main() -> int {
-    std::vector<int> A{2, 3, 9, 2, 5, 1, 3, 7, 10};
-    std::vector<int> B{2, 1, 3, 4, 3, 10, 6, 6, 1, 7, 10, 10, 10};
-    std::vector<int> C{};
-
-    std::unordered_map<int,int> array;
+std::vector<int> filter_non_prime(std::vector<int> A, std::vector<int> B)
+{
+    std::unordered_map<int,int> frequency;
     for (auto i: B)
-        array[i]++;
+        frequency[i]++;
 
     int max_frequency{};
-    for (const auto& [key,value] : array)
+    for (const auto& [key,value] : frequency)
         max_frequency = std::max(max_frequency, value);
 
     auto is_prime = sieve(max_frequency);
 
+    std::vector<int> result;
     for (auto i: A)
     {
-        if (!is_prime[array[i]])
-            C.push_back(i);
+        if (!is_prime[frequency[i]] || frequency[i] == 0)
+            result.push_back(i);
     }
+    return result;
+}
+
+auto main() -> int {
+    std::vector<int> A{2, 3, 9, 2, 5, 1, 3, 7, 10};
+    std::vector<int> B{2, 1, 3, 4, 3, 10, 6, 6, 1, 7, 10, 10, 10};
+    std::vector<int> C = filter_non_prime(A, B );
     for (auto i: C)
     {
         std::cout << i << " ";

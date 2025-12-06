@@ -61,7 +61,49 @@ public:
 class QueueArray {
 private:
     int* arr;
-    int size;
+    int capacity;
+    int front;
+    int rear;
+    int count;
+public:
+    explicit QueueArray(int cap = 10) : capacity(cap), front(0), rear(0), count(0) {
+        arr = new int[capacity];
+    }
+
+    ~QueueArray() {
+        delete[] arr;
+    }
+
+    void push(int val) {
+        if (isFull()) return;
+
+        arr[rear] = val;
+        rear = (rear + 1) % capacity;
+        count++;
+    }
+
+    int pop() {
+        if (isEmpty()) return -1;
+
+        int val = arr[front];
+        front = (front + 1) % capacity;
+        count--;
+
+        return val;
+    }
+
+    int getFront() {
+        if (!isEmpty()) return arr[front];
+        return -1;
+    }
+
+    const bool isEmpty() const {
+        return count == 0;
+    }
+
+    const bool isFull() {
+        return count == capacity;
+    }
 };
 
 int main() {
@@ -73,4 +115,14 @@ int main() {
     for (int i = 0; i < 3; i++) {
         std::cout << queue.pop() << std::endl;
     }
+
+    QueueArray qa(3);
+    qa.push(10);
+    qa.push(20);
+    qa.push(30);
+    std::cout << qa.pop() << std::endl;   // 10
+    std::cout << qa.pop() << std::endl;   // 20
+    qa.push(40);
+    std::cout << qa.getFront() << std::endl;  // 30
+
 }

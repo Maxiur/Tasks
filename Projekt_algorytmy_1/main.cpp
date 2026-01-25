@@ -4,7 +4,7 @@
 #include <sstream>
 #include <vector>
 #include <cctype>
-#define ll long long
+using ll = long long;
 using namespace std;
 
 class ONPConverter {

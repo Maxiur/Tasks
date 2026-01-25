@@ -4,14 +4,16 @@
 #include <sstream>
 #include <vector>
 #include <cctype>
+
 using ll = long long;
 using namespace std;
 
 class ONPConverter {
 private:
-    // Returns operator priority
+    // Priorytety operatorów
     int getPriority(char op) {
         switch (op) {
+            case '~': return 4; // Unarny minus
             case '^': return 3;
             case '*':
             case '/': return 2;
@@ -21,37 +23,26 @@ private:
         }
     }
 
-    // Check if operator is right-associative
+    // Łączność operatorów (prawostronna dla potęgowania i unarnego minusa)
     bool isRightAssociative(char op) {
-        return op == '^';
+        return op == '^' || op == '~';
     }
 
-    // Check if string is a number (including negative numbers like -5)
     bool isNumber(const string& token) {
         if (token.empty()) return false;
-
-        size_t start = 0;
-        if (token[0] == '-') {
-            if (token.size() == 1) return false;
-            start = 1;
-        }
-
-        for (size_t i = start; i < token.size(); ++i) {
-            if (!isdigit(token[i])) return false;
-        }
-        return true;
+        // Obsługa liczb ujemnych, jeśli wystąpiłyby bezpośrednio w RPN
+        size_t start = (token[0] == '-' && token.size() > 1) ? 1 : 0;
+        return isdigit(token[start]);
     }
 
-    // Check if token is an operator
-    bool isOperator(const string& token) {
-        return token.length() == 1 &&
-               (token[0] == '+' || token[0] == '-' || token[0] == '*' ||
-                token[0] == '/' || token[0] == '^');
+    bool isOperator(char c) {
+        return (c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '~');
     }
 
-    // Integer power function
+    // Szybkie potęgowanie dla liczb całkowitych
     ll intPow(ll base, ll exp) {
         if (exp < 0) return 0;
+        if (exp == 0) return 1;
         ll result = 1;
         while (exp > 0) {
             if (exp & 1) result *= base;
@@ -61,99 +52,61 @@ private:
         return result;
     }
 
-    // Tokenize expression and handle negative numbers
-    vector<string> tokenize(const string& expr) {
-        vector<string> tokens;
-        stringstream ss(expr);
-        string token;
-        string prevToken = "";
-
-        while (ss >> token) {
-            // Check if '-' should be treated as part of a negative number
-            if (token == "-") {
-                // It's unary minus if:
-                // 1. It's the first token
-                // 2. Previous token was an operator
-                // 3. Previous token was '('
-                if (prevToken.empty() ||
-                    isOperator(prevToken) || prevToken == "(") {
-
-                    // Read next token (the number)
-                    string nextToken;
-                    if (ss >> nextToken) {
-                        // Combine '-' with the number
-                        tokens.push_back("-" + nextToken);
-                        prevToken = "-" + nextToken;
-                        continue;
-                    }
-                }
-            }
-
-            tokens.push_back(token);
-            prevToken = token;
-        }
-
-        return tokens;
-    }
-
 public:
-    // Convert infix to RPN (Reverse Polish Notation) using Shunting Yard algorithm
+    // Konwersja Infix -> RPN (Stacja Rozrządowa Shunting-Yard)
     string toRPN(const string& expr) {
         stack<char> operatorStack;
         stringstream output;
+        stringstream ss(expr);
+        string token, prevToken = "";
 
-        vector<string> tokens = tokenize(expr);
-
-        for (const string& token : tokens) {
-            // If it's a number (including negative), add to output
+        while (ss >> token) {
             if (isNumber(token)) {
                 output << token << " ";
             }
-            // If it's an operator
-            else if (isOperator(token)) {
-                char op = token[0];
-
-                // Pop operators with higher or equal priority (considering associativity)
-                while (!operatorStack.empty() && operatorStack.top() != '(' &&
-                       (getPriority(operatorStack.top()) > getPriority(op) ||
-                        (getPriority(operatorStack.top()) == getPriority(op) &&
-                         !isRightAssociative(op)))) {
-                    output << operatorStack.top() << " ";
-                    operatorStack.pop();
-                }
-
-                operatorStack.push(op);
-            }
-            // Left parenthesis
             else if (token == "(") {
                 operatorStack.push('(');
             }
-            // Right parenthesis
             else if (token == ")") {
                 while (!operatorStack.empty() && operatorStack.top() != '(') {
                     output << operatorStack.top() << " ";
                     operatorStack.pop();
                 }
-                if (!operatorStack.empty()) {
-                    operatorStack.pop();  // remove '('
-                }
+                if (!operatorStack.empty()) operatorStack.pop(); // Usuń '('
             }
+            else {
+                char op = token[0];
+                // Zamiana binarnego '-' na unarny '~' jeśli występuje na początku lub po innym operatorze
+                if (op == '-' && (prevToken.empty() || prevToken == "(" ||
+                    (prevToken.length() == 1 && isOperator(prevToken[0])))) {
+                    op = '~';
+                }
+
+                while (!operatorStack.empty() && operatorStack.top() != '(') {
+                    int topPrio = getPriority(operatorStack.top());
+                    int currPrio = getPriority(op);
+
+                    if (topPrio > currPrio || (topPrio == currPrio && !isRightAssociative(op))) {
+                        output << operatorStack.top() << " ";
+                        operatorStack.pop();
+                    } else break;
+                }
+                operatorStack.push(op);
+            }
+            prevToken = token;
         }
 
-        // Pop remaining operators
         while (!operatorStack.empty()) {
             output << operatorStack.top() << " ";
             operatorStack.pop();
         }
 
         string result = output.str();
-        if (!result.empty() && result.back() == ' ') {
-            result.pop_back();
-        }
+        if (!result.empty()) result.pop_back(); // Usuwanie ostatniej spacji
         return result;
     }
 
-    // Evaluate RPN expression
+    // Ewaluacja wyrażenia RPN
     ll evaluateRPN(const string& rpn) {
         stack<ll> st;
         stringstream ss(rpn);
@@ -163,8 +116,11 @@ public:
             if (isNumber(token)) {
                 st.push(stoll(token));
             }
-            else if (isOperator(token)) {
-                // Binary operator - need 2 operands
+            else if (token == "~") {
+                ll a = st.top(); st.pop();
+                st.push(-a);
+            }
+            else {
                 ll b = st.top(); st.pop();
                 ll a = st.top(); st.pop();
 
@@ -177,7 +133,6 @@ public:
                 }
             }
         }
-
         return st.top();
     }
 };

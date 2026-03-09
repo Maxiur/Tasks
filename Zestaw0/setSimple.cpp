@@ -1,4 +1,5 @@
 #include <chrono>
+#include <iomanip>
 #include <iostream>
 #include <vector>
 
@@ -8,6 +9,7 @@ public:
     int n;
 
     SetSimple(int size) : n(size), elements(size, false) {}
+    ~SetSimple() = default;
 
     void insert(int x) { if (x >= 0 && x < n) elements[x] = true; }
     void remove(int x) { if (x >= 0 && x < n) elements[x] = false; }
@@ -55,44 +57,62 @@ public:
 };
 
 void run_benchmarks() {
-    // Różne rozmiary N do badania złożoności
     std::vector<int> sizes = {1000, 10000, 100000, 1000000, 10000000};
-
-    std::cout << std::fixed << std::setprecision(6);
-    std::cout << "N\t\tSuma [s]\tCz. wspolna [s]\tRoznica [s]\n";
-    std::cout << "------------------------------------------------------------\n";
+    const int REPEATS = 10; // Ile razy powtarzamy dla uśrednienia
 
     for (int n : sizes) {
+        double sumU = 0, sumI = 0, sumD = 0;
+
         SetSimple A(n), B(n);
-        for(int i=0; i<n; i+=2) A.insert(i);
-        for(int i=0; i<n; i+=2) B.insert(i);
+        for (int i = 0; i < n; i += 2) {
+            A.insert(i);
+            B.insert(i);
+        }
 
-        auto s_start = std::chrono::high_resolution_clock::now();
-        SetSimple resU = SetSimple::unionSets(A, B);
-        auto s_end = std::chrono::high_resolution_clock::now();
+        for (int r = 0; r < REPEATS; ++r) {
 
-        auto i_start = std::chrono::high_resolution_clock::now();
-        SetSimple resI = SetSimple::intersectionSets(A, B);
-        auto i_end = std::chrono::high_resolution_clock::now();
+            auto s_start = std::chrono::high_resolution_clock::now();
+            auto resU = SetSimple::unionSets(A, B);
+            sumU += std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - s_start).count();
 
-        auto d_start = std::chrono::high_resolution_clock::now();
-        SetSimple resD = SetSimple::differenceSets(A, B);
-        auto d_end = std::chrono::high_resolution_clock::now();
-        
-        auto e_start = std::chrono::high_resolution_clock::now();
-        SetSimple resE = SetSimple::areEqual(A, B);
-        auto e_end = std::chrono::high_resolution_clock::now();
+            auto i_start = std::chrono::high_resolution_clock::now();
+            auto resI = SetSimple::intersectionSets(A, B);
+            sumI += std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - i_start).count();
 
-        std::chrono::duration<double> tU = s_end - s_start;
-        std::chrono::duration<double> tI = i_end - i_start;
-        std::chrono::duration<double> tD = d_end - d_start;
-        std::chrono::duration<double> tE = e_end - e_start;
+            auto d_start = std::chrono::high_resolution_clock::now();
+            auto resD = SetSimple::differenceSets(A, B);
+            sumD += std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - d_start).count();
+        }
 
-        std::cout << n << "\t" << tU.count() << "\t" << tI.count() << "\t" << tD.count() << "\t " << tE.count() << "\n";
+        std::cout << n << "," << sumU/REPEATS << "," << sumI/REPEATS << "," << sumD/REPEATS << "\n";
     }
 }
 
 int main() {
     run_benchmarks();
+
+    SetSimple A(20);
+    SetSimple B(20);
+
+    A.insert(1);
+    A.insert(5);
+    A.insert(6);
+    A.insert(7);
+    A.insert(10);
+
+    B.insert(1);
+    B.insert(10);
+    B.insert(11);
+    B.insert(12);
+
+    SetSimple C = SetSimple::unionSets(A, B);
+    C.print();
+
+    SetSimple D = SetSimple::intersectionSets(A, B);
+    D.print();
+
+    SetSimple E = SetSimple::differenceSets(A, B);
+    E.print();
+
     return 0;
 }

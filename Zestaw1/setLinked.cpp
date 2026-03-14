@@ -10,12 +10,45 @@ struct ListNode {
 };
 
 class setLinked {
-    public:
+public:
     ListNode *head;
 
     setLinked() {
         head = new ListNode();
     }
+
+    setLinked(const setLinked &other) {
+        head = new ListNode();
+        ListNode* curr = head;
+        ListNode* otherCurr = other.head->next;
+        while (otherCurr != nullptr) {
+            curr->next = new ListNode(otherCurr->val);
+            curr = curr->next;
+            otherCurr = otherCurr->next;
+        }
+    }
+
+    setLinked& operator=(const setLinked &other) {
+        if (this == &other) return *this;
+
+        ListNode* curr = head->next;
+        while (curr) {
+            ListNode* next = curr->next;
+            delete curr;
+            curr = next;
+        }
+        head->next = nullptr;
+
+        curr = head;
+        ListNode* otherCurr = other.head->next;
+        while (otherCurr) {
+            curr->next = new ListNode(otherCurr->val);
+            curr = curr->next;
+            otherCurr = otherCurr->next;
+        }
+        return *this;
+    }
+
     ~setLinked() {
         ListNode *curr = head;
         while (curr != nullptr) {
@@ -110,7 +143,46 @@ class setLinked {
         return answer;
     }
 
-    static setLinked differenceSets(const setLinked &A, const setLinked &B) {   }
+    static setLinked differenceSets(const setLinked &A, const setLinked &B) {
+        setLinked answer;
+        ListNode *first = A.head->next;
+        ListNode *second = B.head->next;
+        ListNode *curr = answer.head;
+
+        while (first && second) {
+            if (first->val < second->val) {
+                curr->next = new ListNode(first->val);
+                first = first->next;
+                curr = curr->next;
+            }
+            else if (first->val == second->val) {
+                first = first->next;
+                second = second->next;
+            }
+            else {
+                second = second->next;
+            }
+        }
+        while (first) {
+            curr->next = new ListNode(first->val);
+            first = first->next;
+            curr = curr->next;
+        }
+        return answer;
+    }
+
+    static bool areEqual(const setLinked &A, const setLinked &B) {
+        ListNode* first = A.head->next;
+        ListNode* second = B.head->next;
+
+        while (first && second) {
+            if (first->val != second->val) return false;
+            first = first->next;
+            second = second->next;
+        }
+        if (first || second) return false;
+        return true;
+    }
 
     void print() const {
         ListNode *curr = head->next;
@@ -135,21 +207,21 @@ private:
 };
 
 int main() {
-    setLinked set;
-    set.insert(1);
-    set.insert(2);
-    set.insert(3);
-    set.insert(4);
-    set.insert(5);
-    set.print();
-    set.remove(2);
-    set.print();
-    set.insert(2);
-    set.print();
-    set.insert(6);
-    set.insert(-1);
-    std::cout << set.contains(5) << std::endl;
-    std::cout << set.contains(10) << std::endl;
+    // setLinked set;
+    // set.insert(1);
+    // set.insert(2);
+    // set.insert(3);
+    // set.insert(4);
+    // set.insert(5);
+    // set.print();
+    // set.remove(2);
+    // set.print();
+    // set.insert(2);
+    // set.print();
+    // set.insert(6);
+    // set.insert(-1);
+    // std::cout << set.contains(5) << std::endl;
+    // std::cout << set.contains(10) << std::endl;
 
     setLinked A, B;
     A.insert(1);
@@ -168,5 +240,8 @@ int main() {
 
     setLinked D = setLinked::intersectionSets(A, B);
     D.print();
+
+    setLinked E = setLinked::differenceSets(A, B);
+    E.print();
 
 }

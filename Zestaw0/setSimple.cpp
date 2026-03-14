@@ -2,6 +2,8 @@
 #include <iomanip>
 #include <iostream>
 #include <vector>
+#include <fstream>
+
 
 class SetSimple {
 public:
@@ -58,7 +60,12 @@ public:
 
 void run_benchmarks() {
     std::vector<int> sizes = {1000, 10000, 100000, 1000000, 10000000};
-    const int REPEATS = 10; // Ile razy powtarzamy dla uśrednienia
+    std::ofstream output("benchmark.csv");
+    if (!output.is_open())
+        std::cerr << "BŁĄD: Nie mogę otworzyć pliku do zapisu!" << std::endl;
+        return;
+    }
+    const int REPEATS = 10;
 
     for (int n : sizes) {
         double sumU = 0, sumI = 0, sumD = 0;
@@ -85,7 +92,10 @@ void run_benchmarks() {
         }
 
         std::cout << n << "," << sumU/REPEATS << "," << sumI/REPEATS << "," << sumD/REPEATS << "\n";
+        output << n << "," << sumU/REPEATS << "," << sumI/REPEATS << "," << sumD/REPEATS << "\n";
+        output.flush();
     }
+    output.close();
 }
 
 int main() {

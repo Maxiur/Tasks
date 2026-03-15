@@ -60,8 +60,9 @@ public:
 
 void run_benchmarks() {
     std::vector<int> sizes = {1000, 10000, 100000, 1000000, 10000000};
-    std::ofstream output("benchmark.csv");
-    if (!output.is_open())
+    std::fstream output;
+    output.open("../benchmark.csv", std::ios::out);
+    if (!output) {
         std::cerr << "BŁĄD: Nie mogę otworzyć pliku do zapisu!" << std::endl;
         return;
     }

@@ -7,6 +7,7 @@ struct ListNode {
     ListNode(const int x, ListNode *next) : next(next), val(x) {}
     ListNode(const int x) : next(nullptr), val(x) {}
     ListNode() : next(nullptr), val(0) {}
+    ~ListNode() = default;
 };
 
 class setLinked {

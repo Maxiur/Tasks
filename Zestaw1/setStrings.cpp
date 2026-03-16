@@ -51,7 +51,7 @@ int main() {
     mySet.insert("ABC");
     mySet.insert("DEF");
     mySet.insert("XYZ");
-    mySet.insert("ABC"); // Duplikat - nie zostanie dodany
+    mySet.insert("ABC"); // Duplikat
 
     std::cout << "Po wstawieniu: ";
     mySet.print();

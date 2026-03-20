@@ -1,3 +1,4 @@
+#include <chrono>
 #include <iostream>
 
 struct ListNode {
@@ -207,6 +208,49 @@ private:
     }
 };
 
+void run_benchmark() {
+    // Dodana kolumna AreEqual_us
+    std::cout << "N,Union_us,Intersection_us,Difference_us,AreEqual_us\n";
+
+    std::vector<int> sizes = {1000, 2000, 4000, 6000, 8000, 10000, 15000, 20000, 40000, 60000, 100000, 2000000};
+
+    for (int N : sizes) {
+        setLinked A, B;
+
+        for (int i = N; i > 0; --i) {
+            A.insert(i * 2);
+            B.insert(i * 2 - 1);
+        }
+
+        // UNION
+        auto start = std::chrono::high_resolution_clock::now();
+        setLinked C = setLinked::unionSets(A, B);
+        auto end = std::chrono::high_resolution_clock::now();
+        auto time_union = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+        // INTERSECTION
+        start = std::chrono::high_resolution_clock::now();
+        setLinked D = setLinked::intersectionSets(A, B);
+        end = std::chrono::high_resolution_clock::now();
+        auto time_intersect = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+        // DIFFERENCE
+        start = std::chrono::high_resolution_clock::now();
+        setLinked E = setLinked::differenceSets(A, B);
+        end = std::chrono::high_resolution_clock::now();
+        auto time_diff = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+        // ARE EQUAL
+        setLinked A_copy = A;
+        start = std::chrono::high_resolution_clock::now();
+        bool eq = setLinked::areEqual(A, A_copy);
+        end = std::chrono::high_resolution_clock::now();
+        auto time_eq = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+        std::cout << N << "," << time_union << "," << time_intersect << "," << time_diff << "," << time_eq << "\n";
+    }
+}
+
 int main() {
     // setLinked set;
     // set.insert(1);
@@ -224,25 +268,27 @@ int main() {
     // std::cout << set.contains(5) << std::endl;
     // std::cout << set.contains(10) << std::endl;
 
-    setLinked A, B;
-    A.insert(1);
-    A.insert(2);
-    A.insert(3);
-    B.insert(2);
-    B.insert(3);
-    B.insert(4);
+    // setLinked A, B;
+    // A.insert(1);
+    // A.insert(2);
+    // A.insert(3);
+    // B.insert(2);
+    // B.insert(3);
+    // B.insert(4);
+    //
+    // A.insert(6);
+    //
+    // A.print();
+    // B.print();
+    // setLinked C = setLinked::unionSets(A, B);
+    // C.print();
+    //
+    // setLinked D = setLinked::intersectionSets(A, B);
+    // D.print();
+    //
+    // setLinked E = setLinked::differenceSets(A, B);
+    // E.print();
 
-    A.insert(6);
-
-    A.print();
-    B.print();
-    setLinked C = setLinked::unionSets(A, B);
-    C.print();
-
-    setLinked D = setLinked::intersectionSets(A, B);
-    D.print();
-
-    setLinked E = setLinked::differenceSets(A, B);
-    E.print();
+    run_benchmark();
 
 }

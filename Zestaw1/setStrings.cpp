@@ -45,21 +45,76 @@ public:
     }
 };
 
+#include <chrono>
+
+// ... tutaj leży twoja klasa SetStrings ...
+
+void run_benchmark() {
+    std::cout << "N,Insert_us,Contains_us,Remove_us\n";
+
+    // Zestaw rozmiarów. Nie bierzemy za dużych, bo faza "wypełniania" wektora zajmie ruski rok (każdy insert to O(N), co daje O(N^2) na start)
+    std::vector<int> sizes = {1000, 2000, 4000, 6000, 8000, 10000, 15000, 20000, 40000, 60000, 100000};
+    const int k = 50; // Długość stringa
+    const int BATCH = 1000; // Robimy po 1000 operacji, żeby zmierzyć sensowny czas
+
+    for (int N : sizes) {
+        SetStrings mySet(k);
+
+        // Setup: nabijamy zbiór danymi
+        for (int i = 0; i < N; ++i) {
+            std::string s = std::to_string(i);
+            // Dopychamy znakami 'A', żeby string miał zawsze równo długość k
+            s.append(k - s.length(), 'A');
+            mySet.insert(s);
+        }
+
+        std::string not_found = "NOTINSET!!"; // String o długości 10, którego na 100% nie ma
+
+        // Benchmark: CONTAINS (wymusza pełny skan O(N))
+        auto start = std::chrono::high_resolution_clock::now();
+        for (int i = 0; i < BATCH; ++i) {
+            mySet.contains(not_found);
+        }
+        auto end = std::chrono::high_resolution_clock::now();
+        auto time_contains = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+        // Benchmark: REMOVE (wymusza pełny skan O(N))
+        start = std::chrono::high_resolution_clock::now();
+        for (int i = 0; i < BATCH; ++i) {
+            mySet.remove(not_found);
+        }
+        end = std::chrono::high_resolution_clock::now();
+        auto time_remove = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+        // Benchmark: INSERT (wymusza pełny skan O(N) i na końcu alokuje)
+        start = std::chrono::high_resolution_clock::now();
+        for (int i = 0; i < BATCH; ++i) {
+            std::string s = "IN" + std::to_string(i);
+            s.append(k - s.length(), 'B');
+            mySet.insert(s);
+        }
+        end = std::chrono::high_resolution_clock::now();
+        auto time_insert = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+        std::cout << N << "," << time_insert << "," << time_contains << "," << time_remove << "\n";
+    }
+}
+
 int main() {
-    SetStrings mySet(3);
-
-    mySet.insert("ABC");
-    mySet.insert("DEF");
-    mySet.insert("XYZ");
-    mySet.insert("ABC"); // Duplikat
-
-    std::cout << "Po wstawieniu: ";
-    mySet.print();
-
-    std::cout << "Czy zawiera 'DEF'? " << (mySet.contains("DEF") ? "Tak" : "Nie") << std::endl;
-    std::cout << "Czy zawiera 'GHI'? " << (mySet.contains("GHI") ? "Tak" : "Nie") << std::endl;
-
-    mySet.remove("DEF");
-    std::cout << "Po usunieciu 'DEF': ";
-    mySet.print();
+    // SetStrings mySet(3);
+    //
+    // mySet.insert("ABC");
+    // mySet.insert("DEF");
+    // mySet.insert("XYZ");
+    // mySet.insert("ABC"); // Duplikat
+    //
+    // std::cout << "Po wstawieniu: ";
+    // mySet.print();
+    //
+    // std::cout << "Czy zawiera 'DEF'? " << (mySet.contains("DEF") ? "Tak" : "Nie") << std::endl;
+    // std::cout << "Czy zawiera 'GHI'? " << (mySet.contains("GHI") ? "Tak" : "Nie") << std::endl;
+    //
+    // mySet.remove("DEF");
+    // std::cout << "Po usunieciu 'DEF': ";
+    // mySet.print();
 }

@@ -47,9 +47,9 @@ public:
 };
 
 void run_benchmark() {
-    std::cout << "N,Insert_us,Contains_us,Remove_us\n";
+    std::cout << "N,Insert,Contains,Remove\n";
 
-    std::vector<int> sizes = {1000, 2000, 4000, 6000, 8000, 10000, 15000, 20000, 40000, 60000, 100000};
+    std::vector<int> sizes = {1000, 2000, 4000, 6000, 8000, 10000, 15000, 20000};
     const int k = 50; // Długość stringa
     const int BATCH = 1000;
 
@@ -108,4 +108,6 @@ int main() {
     // mySet.remove("DEF");
     // std::cout << "Po usunieciu 'DEF': ";
     // mySet.print();
+    
+    run_benchmark();
 }

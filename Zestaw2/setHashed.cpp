@@ -120,15 +120,15 @@ public:
     }
 
     void print(const std::string& name) const {
-    std::cout << name << " = { ";
-    for (int i = 0; i < N; ++i) {
-        ListNode* curr = heads[i]->next;
-        while (curr) {
-            std::cout << curr->val << " ";
-            curr = curr->next;
+        std::cout << name << " = { ";
+        for (int i = 0; i < N; ++i) {
+            ListNode* curr = heads[i]->next;
+            while (curr) {
+                std::cout << curr->val << " ";
+                curr = curr->next;
+            }
         }
-    }
-    std::cout << "}\n";
+        std::cout << "}\n";
 }
 
     SetHashed Union(const SetHashed& other) const {

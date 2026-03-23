@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.2)
+cmake_minimum_required(VERSION 4.0.2)
 project(Zestaw2)
 
 set(CMAKE_CXX_STANDARD 26)

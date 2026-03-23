@@ -252,43 +252,43 @@ void run_benchmark() {
 }
 
 int main() {
-    // setLinked set;
-    // set.insert(1);
-    // set.insert(2);
-    // set.insert(3);
-    // set.insert(4);
-    // set.insert(5);
-    // set.print();
-    // set.remove(2);
-    // set.print();
-    // set.insert(2);
-    // set.print();
-    // set.insert(6);
-    // set.insert(-1);
-    // std::cout << set.contains(5) << std::endl;
-    // std::cout << set.contains(10) << std::endl;
+    setLinked set;
+    set.insert(1);
+    set.insert(2);
+    set.insert(3);
+    set.insert(4);
+    set.insert(5);
+    set.print();
+    set.remove(2);
+    set.print();
+    set.insert(2);
+    set.print();
+    set.insert(6);
+    set.insert(-1);
+    std::cout << set.contains(5) << std::endl;
+    std::cout << set.contains(10) << std::endl;
 
-    // setLinked A, B;
-    // A.insert(1);
-    // A.insert(2);
-    // A.insert(3);
-    // B.insert(2);
-    // B.insert(3);
-    // B.insert(4);
-    //
-    // A.insert(6);
-    //
-    // A.print();
-    // B.print();
-    // setLinked C = setLinked::unionSets(A, B);
-    // C.print();
-    //
-    // setLinked D = setLinked::intersectionSets(A, B);
-    // D.print();
-    //
-    // setLinked E = setLinked::differenceSets(A, B);
-    // E.print();
+    setLinked A, B;
+    A.insert(1);
+    A.insert(2);
+    A.insert(3);
+    B.insert(2);
+    B.insert(3);
+    B.insert(4);
 
-    run_benchmark();
+    A.insert(6);
+
+    A.print();
+    B.print();
+    setLinked C = setLinked::unionSets(A, B);
+    C.print();
+
+    setLinked D = setLinked::intersectionSets(A, B);
+    D.print();
+
+    setLinked E = setLinked::differenceSets(A, B);
+    E.print();
+
+    // run_benchmark();
 
 }

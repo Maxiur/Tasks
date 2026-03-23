@@ -92,22 +92,22 @@ void run_benchmark() {
 }
 
 int main() {
-    // SetStrings mySet(3);
-    //
-    // mySet.insert("ABC");
-    // mySet.insert("DEF");
-    // mySet.insert("XYZ");
-    // mySet.insert("ABC"); // Duplikat
-    //
-    // std::cout << "Po wstawieniu: ";
-    // mySet.print();
-    //
-    // std::cout << "Czy zawiera 'DEF'? " << (mySet.contains("DEF") ? "Tak" : "Nie") << std::endl;
-    // std::cout << "Czy zawiera 'GHI'? " << (mySet.contains("GHI") ? "Tak" : "Nie") << std::endl;
-    //
-    // mySet.remove("DEF");
-    // std::cout << "Po usunieciu 'DEF': ";
-    // mySet.print();
+    SetStrings mySet(3);
+
+    mySet.insert("ABC");
+    mySet.insert("DEF");
+    mySet.insert("XYZ");
+    mySet.insert("ABC"); // Duplikat
+
+    std::cout << "Po wstawieniu: ";
+    mySet.print();
+
+    std::cout << "Czy zawiera 'DEF'? " << (mySet.contains("DEF") ? "Tak" : "Nie") << std::endl;
+    std::cout << "Czy zawiera 'GHI'? " << (mySet.contains("GHI") ? "Tak" : "Nie") << std::endl;
+
+    mySet.remove("DEF");
+    std::cout << "Po usunieciu 'DEF': ";
+    mySet.print();
     
     run_benchmark();
 }

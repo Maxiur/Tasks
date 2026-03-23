@@ -119,13 +119,17 @@ public:
         }
     }
 
-    void print(const std::string& name) const {
-        std::cout << name << " = { ";
+    void print() const {
+        std::cout << " = { ";
         for (int i = 0; i < N; ++i) {
             ListNode* curr = heads[i]->next;
             while (curr) {
                 std::cout << curr->val << " ";
                 curr = curr->next;
+            }
+            if (i != N - 1) {
+                std::cout << "} " <<std::endl;
+                std::cout << "{ ";
             }
         }
         std::cout << "}\n";
@@ -335,6 +339,37 @@ void run_benchmarks() {
 }
 
 int main() {
-    run_benchmarks();
+    // run_benchmarks();
+
+    SetHashed A(10);
+    SetHashed B(10);
+
+    for (int i = 0; i < 101; i += 5) {
+        A.insert(i);
+        B.insert(i);
+    }
+    A.print();
+    A.Intersection(B).print();
+    A.Union(B).print();
+
+    std::cout << (A.contains(10) ? "Tak " : "Nie ") << std::endl;
+    std::cout << (A.contains(11) ? "Tak " : "Nie ") << std::endl;
+
+    std::cout << "-------------------------------" << std::endl;
+
+    SetHashed C(10);
+    SetHashed D(10);
+    for (int i = 0; i < 101; i += 5) {
+        C.insert(i);
+        D.insert(i + 1);
+    }
+
+    C.print();
+    D.print();
+
+    C.Intersection(D).print();
+    C.Union(D).print();
+    C.Difference(D).print();
+
     return 0;
 }

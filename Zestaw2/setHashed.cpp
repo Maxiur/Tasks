@@ -268,9 +268,9 @@ void run_benchmarks() {
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(1, 2000000);
 
-    const int N_buckets = 100;
+    const int n_elements = 10000;
 
-    std::cout << std::left << std::setw(10) << "n"
+    std::cout << std::left << std::setw(10) << "Buckets"
               << std::setw(12) << "Insert"
               << std::setw(12) << "Contains"
               << std::setw(12) << "Remove"
@@ -279,15 +279,17 @@ void run_benchmarks() {
               << std::setw(12) << "Diff" << std::endl;
     std::cout << std::string(80, '-') << std::endl;
 
-    for (int n = 1000; n <= 30000; n += 2000) {
-        SetHashed A(N_buckets);
-        SetHashed B(N_buckets);
+    // Generujemy dane raz, żeby każdy test miał te same liczby do przerobienia
+    std::vector<int> values(n_elements);
+    std::vector<int> other_values(n_elements);
+    for(int i = 0; i < n_elements; ++i) {
+        values[i] = dis(gen);
+        other_values[i] = dis(gen);
+    }
 
-        std::vector<int> values;
-        for(int i = 0; i < n; ++i) values.push_back(dis(gen));
-
-        std::vector<int> other_values;
-        for(int i = 0; i < n; ++i) other_values.push_back(dis(gen));
+    for (int buckets = 1; buckets <= 100; ++buckets) {
+        SetHashed A(buckets);
+        SetHashed B(buckets);
 
         // 1. Benchmark INSERT
         auto start = std::chrono::high_resolution_clock::now();
@@ -327,8 +329,8 @@ void run_benchmarks() {
         end = std::chrono::high_resolution_clock::now();
         auto d_rem = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
-        // Wypisanie wyników w jednej linii (ułatwia import do Pythona/Excela)
-        std::cout << std::left << std::setw(10) << n
+        // Plujemy wynikami w konsole
+        std::cout << std::left << std::setw(10) << buckets
                   << std::setw(12) << d_ins
                   << std::setw(12) << d_cont
                   << std::setw(12) << d_rem
@@ -341,35 +343,35 @@ void run_benchmarks() {
 int main() {
     // run_benchmarks();
 
-    SetHashed A(10);
-    SetHashed B(10);
+     SetHashed A(10);
+     SetHashed B(10);
 
-    for (int i = 0; i < 101; i += 5) {
-        A.insert(i);
-        B.insert(i);
-    }
-    A.print();
-    A.Intersection(B).print();
-    A.Union(B).print();
+     for (int i = 0; i < 101; i += 5) {
+         A.insert(i);
+         B.insert(i);
+     }
+     A.print();
+     A.Intersection(B).print();
+     A.Union(B).print();
 
-    std::cout << (A.contains(10) ? "Tak " : "Nie ") << std::endl;
-    std::cout << (A.contains(11) ? "Tak " : "Nie ") << std::endl;
+     std::cout << (A.contains(10) ? "Tak " : "Nie ") << std::endl;
+     std::cout << (A.contains(11) ? "Tak " : "Nie ") << std::endl;
 
-    std::cout << "-------------------------------" << std::endl;
+     std::cout << "-------------------------------" << std::endl;
 
-    SetHashed C(10);
-    SetHashed D(10);
-    for (int i = 0; i < 101; i += 5) {
-        C.insert(i);
-        D.insert(i + 1);
-    }
+     SetHashed C(10);
+     SetHashed D(10);
+     for (int i = 0; i < 101; i += 5) {
+         C.insert(i);
+         D.insert(i + 1);
+     }
 
-    C.print();
-    D.print();
+     C.print();
+     D.print();
 
-    C.Intersection(D).print();
-    C.Union(D).print();
-    C.Difference(D).print();
+     C.Intersection(D).print();
+     C.Union(D).print();
+     C.Difference(D).print();
 
-    return 0;
+     return 0;
 }

@@ -1,4 +1,6 @@
 #include <iostream>
+#include <chrono>
+#include <random>
 
 template <typename T>
 struct ListNode {
@@ -108,9 +110,34 @@ private:
     }
 };
 
+void benchmark() {
+    std::cout << "Rozmiar(N),Czas_popMin(ns)\n";
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dist(1, 1000000);
+
+    for (int n = 10000; n <= 100000; n += 10000) {
+        PriorityQueue<int> pq;
+
+        for (int i = 0; i < n; ++i) {
+            pq.insert(dist(gen));
+        }
+
+        auto start = std::chrono::high_resolution_clock::now();
+        pq.popMin();
+        auto end = std::chrono::high_resolution_clock::now();
+
+        auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
+
+        std::cout << n << "," << duration << "\n";
+    }
+}
+
+
 int main() {
     // --- TEST 1: LICZBY CAŁKOWITE ---
-    std::cout << "--- Test Intów ---" << std::endl;
+    std::cout << "--- Test Intow ---" << std::endl;
     PriorityQueue<int> pqInt;
 
     pqInt.insert(50);
@@ -124,7 +151,7 @@ int main() {
     std::cout << "Contains 30? " << (pqInt.contains(30) ? "Tak" : "Nie") << std::endl;
 
     // --- TEST 2: NAPISY (ALFABETYCZNIE) ---
-    std::cout << "\n--- Test Stringów ---" << std::endl;
+    std::cout << "\n--- Test Stringow ---" << std::endl;
     PriorityQueue<std::string> pqStr;
 
     pqStr.insert("Zebra");
@@ -133,6 +160,8 @@ int main() {
 
     std::cout << "Najmniejszy string (popMin): " << pqStr.popMin() << std::endl;
     std::cout << "Kolejny (popMin): " << pqStr.popMin() << std::endl;
+
+    benchmark();
 
     return 0;
 }

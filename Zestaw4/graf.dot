@@ -1,0 +1,14 @@
+digraph G {
+  // Wierzcholki
+  0 [label="A"];
+  1 [label="B"];
+  2 [label="C"];
+
+  // Krawedzie
+  0 -> 1 [label="1"];
+  0 -> 2 [label="3"];
+  1 -> 0 [label="1"];
+  1 -> 2 [label="2"];
+  2 -> 0 [label="3"];
+  2 -> 1 [label="2"];
+}

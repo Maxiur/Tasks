@@ -2,6 +2,7 @@
 #include <vector>
 #include <random>
 #include <chrono>
+#include <fstream>
 
 template <typename V, typename E>
 class Graph {
@@ -85,6 +86,33 @@ public:
         adjMatrix[x][y].value = v;
     }
 
+
+    void exportToDot(const std::string& filename) const {
+        std::ofstream file(filename);
+        if (!file.is_open()) {
+            throw std::runtime_error("Nie da sie otworzyc pliku do zapisu!");
+        }
+
+        file << "digraph G {\n";
+
+        file << "  // Wierzcholki\n";
+        for (int i = 0; i < vertices.size(); ++i) {
+            file << "  " << i << " [label=\"" << vertices[i] << "\"];\n";
+        }
+
+        file << "\n  // Krawedzie\n";
+        for (int i = 0; i < vertices.size(); ++i) {
+            for (int j = 0; j < vertices.size(); ++j) {
+                if (adjMatrix[i][j].is_connected) {
+                    file << "  " << i << " -> " << j
+                         << " [label=\"" << adjMatrix[i][j].value << "\"];\n";
+                }
+            }
+        }
+
+        file << "}\n";
+        file.close();
+    }
 };
 
 // --- BADANIE ZŁOŻONOŚCI DLA adjacent(x, y) ---
@@ -122,8 +150,27 @@ int main() {
     std::cout << "Czy sasiaduja? " << (myGraph.adjacent(v1, v2) ? "Tak" : "Nie") << "\n";
     std::cout << "Dystans: " << myGraph.getEdgeValue(v1, v2) << "\n\n";
 
-    std::cout << "--- Benchmark ---\n";
-    benchmark();
+    // std::cout << "--- Benchmark ---\n";
+    // benchmark();
+
+    Graph<std::string, int> triGraph;
+    int a = triGraph.addVertex("A");
+    int b = triGraph.addVertex("B");
+    int c = triGraph.addVertex("C");
+
+    // Łączymy A <-> B, B <-> C, C <-> A
+    triGraph.addEdge(a, b); triGraph.addEdge(b, a);
+    triGraph.addEdge(b, c); triGraph.addEdge(c, b);
+    triGraph.addEdge(c, a); triGraph.addEdge(a, c);
+
+    triGraph.setEdgeValue(a, b, 1); triGraph.setEdgeValue(b, a, 1);
+    triGraph.setEdgeValue(b, c, 2); triGraph.setEdgeValue(c, b, 2);
+    triGraph.setEdgeValue(c, a, 3); triGraph.setEdgeValue(a, c, 3);
+
+    std::cout << "Generowanie pliku graf.dot...\n";
+    triGraph.exportToDot("../graf.dot");
+
+    std::cout << "Gotowe.\n";
 
     return 0;
 }

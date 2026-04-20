@@ -91,7 +91,49 @@ public:
         if (!adjacent(x, y)) throw std::out_of_range("Brak krawedzi");
         adjList.at(x).at(y).value = v;
     }
+
+    int getSize() const {
+        return vertices.size();
+    }
 };
+
+template <typename V, typename E>
+void dfsColoring(int u, const Graph<V, E>& G, std::vector<int>& result) {
+    int n = G.getSize();
+    std::vector<bool> colorUsed(n, false);
+
+    for (int neighbor : G.neighbours(u)) {
+        if (result[neighbor] != -1) {
+            colorUsed[result[neighbor]] = true;
+        }
+    }
+
+    int color = 0;
+    while (color < n && colorUsed[color]) {
+        color++;
+    }
+    result[u] = color; // Pomalowane!
+
+    for (int neighbor : G.neighbours(u)) {
+        if (result[neighbor] == -1) {
+            dfsColoring(neighbor, G, result);
+        }
+    }
+}
+
+template <typename V, typename E>
+std::vector<int> turnOnDFS(const Graph<V, E>& G) {
+    int n = G.getSize();
+    std::vector<int> result(n, -1); // Wszyscy na start maja -1 (niepokolorowani)
+
+    for (int i = 0; i < n; ++i) {
+        if (result[i] == -1) {
+            dfsColoring(i, G, result);
+        }
+    }
+
+    return result;
+}
 
 void benchmark() {
     std::cout << "Liczba_sasiadow(K),Czas_neighbours(ns)\n";
@@ -119,34 +161,66 @@ void benchmark() {
 }
 
 int main() {
-    std::cout << "--- TESTY  ---\n";
-    Graph<std::string, double> myGraph;
+    // std::cout << "--- TESTY  ---\n";
+    // Graph<std::string, double> myGraph;
+    //
+    // int v0 = myGraph.addVertex("Krakow"); // Index 0
+    // int v1 = myGraph.addVertex("Warszawa"); // Index 1
+    // int v2 = myGraph.addVertex("Poznan");   // Index 2
+    //
+    // myGraph.addEdge(v0, v1);
+    // myGraph.setEdgeValue(v0, v1, 300.5);
+    // myGraph.addEdge(v0, v2);
+    // myGraph.setEdgeValue(v0, v2, 450.0);
+    //
+    // std::cout << "Sasiaduje 0 z 1? (Krakow-Warszawa): "
+    //           << (myGraph.adjacent(v0, v1) ? "TAK" : "NIE") << "\n";
+    //
+    // std::cout << "\nUsuwamy Warszawe (index 1). Poznan (index 2) powinien wskoczyc na jej miejsce!\n";
+    // myGraph.removeVertex(v1);
+    //
+    // std::cout << "Sasiaduje 0 z 1? (Teraz to Krakow-Poznan): "
+    //           << (myGraph.adjacent(v0, 1) ? "TAK" : "NIE") << "\n";
+    //
+    // if (myGraph.adjacent(v0, 1)) {
+    //     std::cout << "Wartosc nowej krawedzi (powinno byc 450): "
+    //               << myGraph.getEdgeValue(v0, 1) << "\n";
+    // }
+    //
+    // std::cout << "\n--- BENCHMARK ---\n";
+    // benchmark();
 
-    int v0 = myGraph.addVertex("Krakow"); // Index 0
-    int v1 = myGraph.addVertex("Warszawa"); // Index 1
-    int v2 = myGraph.addVertex("Poznan");   // Index 2
+    Graph<std::string, int> lights;
+    lights.addVertex("L1");
+    lights.addVertex("L2");
+    lights.addVertex("L3");
+    lights.addVertex("L4");
+    lights.addVertex("L5");
 
-    myGraph.addEdge(v0, v1);
-    myGraph.setEdgeValue(v0, v1, 300.5);
-    myGraph.addEdge(v0, v2);
-    myGraph.setEdgeValue(v0, v2, 450.0);
+    lights.addEdge(0, 3); // 1-4
+    lights.addEdge(0, 1); // 1-2
 
-    std::cout << "Sasiaduje 0 z 1? (Krakow-Warszawa): "
-              << (myGraph.adjacent(v0, v1) ? "TAK" : "NIE") << "\n";
+    lights.addEdge(1, 3); // 2-4
+    lights.addEdge(1, 2); // 2-3
+    lights.addEdge(1, 0); // 2-1
+    lights.addEdge(1, 4); // 2-5
 
-    std::cout << "\nUsuwamy Warszawe (index 1). Poznan (index 2) powinien wskoczyc na jej miejsce!\n";
-    myGraph.removeVertex(v1);
+    lights.addEdge(2, 4); // 3-5
+    lights.addEdge(2, 1); // 3-2
 
-    std::cout << "Sasiaduje 0 z 1? (Teraz to Krakow-Poznan): "
-              << (myGraph.adjacent(v0, 1) ? "TAK" : "NIE") << "\n";
+    lights.addEdge(3, 0); // 4-1
+    lights.addEdge(3, 1); // 4-2
 
-    if (myGraph.adjacent(v0, 1)) {
-        std::cout << "Wartosc nowej krawedzi (powinno byc 450): "
-                  << myGraph.getEdgeValue(v0, 1) << "\n";
+    lights.addEdge(4, 2); // 5-3
+    lights.addEdge(4, 1); // 5-2
+
+    std::vector<int> colors = turnOnDFS(lights);
+
+    for (int i = 0; i < colors.size(); ++i) {
+        if (colors[i] != -1) {
+            std::cout << "L" << i + 1 << " -> " << colors[i] << "\n";
+        }
     }
-
-    std::cout << "\n--- BENCHMARK ---\n";
-    benchmark();
 
     return 0;
 }

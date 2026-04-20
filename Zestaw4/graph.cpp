@@ -50,11 +50,26 @@ public:
     void removeVertex(int x) {
         if (x >= vertices.size()) return;
 
-        vertices.erase(vertices.begin() + x);
-        adjMatrix.erase(adjMatrix.begin() + x);
+        int lastIndex = vertices.size() - 1;
+
+        if (x != lastIndex) {
+            // Zamieniamy same wierzchołki (nazwy/wartości)
+            std::swap(vertices[x], vertices[lastIndex]);
+
+            // Zamieniamy całe wiersze w macierzy
+            std::swap(adjMatrix[x], adjMatrix[lastIndex]);
+
+            // Zamieniamy kolumny w każdym wierszu
+            for (auto& row : adjMatrix) {
+                std::swap(row[x], row[lastIndex]);
+            }
+        }
+
+        vertices.pop_back();
+        adjMatrix.pop_back();
 
         for (auto& row : adjMatrix) {
-            row.erase(row.begin() + x);
+            row.pop_back(); // Usuwa ostatnią kolumnę z pozostałych wierszy
         }
     }
 
@@ -149,6 +164,8 @@ int main() {
 
     std::cout << "Czy sasiaduja? " << (myGraph.adjacent(v1, v2) ? "Tak" : "Nie") << "\n";
     std::cout << "Dystans: " << myGraph.getEdgeValue(v1, v2) << "\n\n";
+
+    myGraph.exportToDot("../grafMiasta.dot");
 
     // std::cout << "--- Benchmark ---\n";
     // benchmark();

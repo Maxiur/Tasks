@@ -119,7 +119,7 @@ void benchmark() {
 }
 
 int main() {
-    std::cout << "--- TESTY ---\n";
+    std::cout << "--- TESTY  ---\n";
     Graph<std::string, double> myGraph;
 
     int v0 = myGraph.addVertex("Krakow"); // Index 0

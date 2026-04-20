@@ -6,7 +6,7 @@
 
 template <typename V, typename E>
 class Graph {
-
+private:
     struct Edge {
         bool is_connected = false;
         E value{};

@@ -53,7 +53,7 @@ public:
         int lastIndex = vertices.size() - 1;
 
         if (x != lastIndex) {
-            // Zamieniamy same wierzchołki (nazwy/wartości)
+            // Zamieniamy same wierzchołki
             std::swap(vertices[x], vertices[lastIndex]);
 
             // Zamieniamy całe wiersze w macierzy
@@ -130,7 +130,6 @@ public:
     }
 };
 
-// --- BADANIE ZŁOŻONOŚCI DLA adjacent(x, y) ---
 void benchmark() {
     std::cout << "Rozmiar(V),Czas_adjacent(ns)\n";
     std::random_device rd;

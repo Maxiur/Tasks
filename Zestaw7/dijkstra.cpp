@@ -74,6 +74,8 @@ int main() {
     std::cout << "Czas do ubikacji J -> B : " << distJ[1] << "\n";
     std::cout << "Czas do ubikacji J -> A : " << distJ[0] << "\n";
 
+
+
     // --- CZĘŚĆ B: Z aneksu (I = 8) do szefa (D = 3) ---
     auto [distI, parentI] = dijkstra(adj, 8);
     std::cout << "\n--- CZESC B ---\n";

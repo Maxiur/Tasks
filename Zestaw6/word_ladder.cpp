@@ -28,8 +28,8 @@ std::string join(const std::vector<std::string>& vec) {
 }
 
 int main() {
-    std::string start_word = "matma";
-    std::string end_word = "radom";
+    std::string start_word = "rety";
+    std::string end_word = "utom";
 
     int target_len = split_utf8(start_word).size();
     std::string dict_filename = "../slowa/slowa_" + std::to_string(target_len) + ".txt";

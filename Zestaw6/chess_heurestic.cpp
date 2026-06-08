@@ -5,7 +5,7 @@
 #include <fstream>
 #include <algorithm>
 
-constexpr int N = 60;
+constexpr int N = 8;
 
 // legal moves
 int cx[8] = {1, 1, 2, 2, -1, -1, -2, -2};

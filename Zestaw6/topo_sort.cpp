@@ -4,7 +4,7 @@
 #include <utility>
 
 int main() {
-    std::vector<std::pair<int, int> > graph = {{0, 1}, {1, 3}, {2, 3}, {3, 5}, {3, 7}, {4, 5}, {5, 6}, {6, 8}, {7, 8}};
+    std::vector<std::pair<int, int> > graph = {{0, 3}, {1, 3}, {2, 3}, {3, 5}, {3, 7}, {4, 5}, {5, 6}, {6, 8}, {7, 8}};
     int numNodes = 9;
     std::vector<std::vector<int> > adjList(numNodes);
 

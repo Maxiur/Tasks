@@ -1,0 +1,36 @@
+graph G {
+    node [shape=point, color=blue, width=0.1];
+    edge [color=red, penwidth=2];
+    "Augustów" [pos="23,53.84!", xlabel="Augustów"];
+    "Białystok" [pos="23.16,53.14!", xlabel="Białystok"];
+    "Bydgoszcz" [pos="18.01,53.12!", xlabel="Bydgoszcz"];
+    "Częstochowa" [pos="19.13,50.81!", xlabel="Częstochowa"];
+    "Elbląg" [pos="19.4,54.18!", xlabel="Elbląg"];
+    "Gdańsk" [pos="18.64,54.36!", xlabel="Gdańsk"];
+    "Gdynia" [pos="18.53,54.52!", xlabel="Gdynia"];
+    "Gorzów_Wielkopolski" [pos="15.23,52.74!", xlabel="Gorzów_Wielkopolski"];
+    "Grudziądz" [pos="18.75,53.49!", xlabel="Grudziądz"];
+    "Katowice" [pos="19.02,50.26!", xlabel="Katowice"];
+    "Kielce" [pos="20.65,50.89!", xlabel="Kielce"];
+    "Koszalin" [pos="16.18,54.19!", xlabel="Koszalin"];
+    "Kraków" [pos="19.96,50.06!", xlabel="Kraków"];
+    "Legnica" [pos="16.16,51.21!", xlabel="Legnica"];
+    "Łódź" [pos="19.46,51.77!", xlabel="Łódź"];
+    "Lublin" [pos="22.57,51.24!", xlabel="Lublin"];
+    "Nowy_Dworek" [pos="15.517,52.335!", xlabel="Nowy_Dworek"];
+    "Olsztyn" [pos="20.49,53.78!", xlabel="Olsztyn"];
+    "Opole" [pos="17.94,50.68!", xlabel="Opole"];
+    "Piła" [pos="16.74,53.15!", xlabel="Piła"];
+    "Piotrków_Trybunalski" [pos="19.7,51.41!", xlabel="Piotrków_Trybunalski"];
+    "Poznań" [pos="16.9,52.4!", xlabel="Poznań"];
+    "Przemyśl" [pos="22.78,49.79!", xlabel="Przemyśl"];
+    "Radom" [pos="21.16,51.4!", xlabel="Radom"];
+    "Rzeszów" [pos="22,50.05!", xlabel="Rzeszów"];
+    "Szczecin" [pos="14.53,53.43!", xlabel="Szczecin"];
+    "Tarnów" [pos="20.99,50.01!", xlabel="Tarnów"];
+    "Warszawa" [pos="21.02,52.26!", xlabel="Warszawa"];
+    "Włocławek" [pos="19.06,52.66!", xlabel="Włocławek"];
+    "Wrocław" [pos="17.03,51.11!", xlabel="Wrocław"];
+    "Zakopane" [pos="19.96,49.29!", xlabel="Zakopane"];
+    "Elbląg" -- "Olsztyn";
+}
